@@ -1,4 +1,4 @@
-Dear folks, I just planned to drop here my /etc/ configs,( but since https://www.debian.org/releases/trixie/ came out, I want to follow up with that ya all k*now ;)
+Dear folks, I just planned to drop here my /etc/ configs,and should have done so,( but since https://www.debian.org/releases/trixie/ came out, I want to follow up with that ya all k*now ;)
 Sooo , here we go through a short journey of upgrading to Debian 13 (Trixie), from an up to date Bookworm ! , with an foolish amateur audit later this week ... , 
 because it is probably going to mess up ya checksum database e.g. AIDE !
 
