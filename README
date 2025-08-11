@@ -2,4 +2,4 @@ Dear folks, I just planned to drop here my /etc/ configs,( but since https://www
 Sooooo , here we go through a short journey of upgrading to Debian 13 (Trixie), from an up to date Bookworm ! , with an foolish amateur audit later this week ... , 
 because it is going to mess up ya checksum database e.g. AIDE !
 
-Beware, just like most people I need to use none-free firmware to drive my hardware, and have upgrade recently my Debian 12 "bookworm" !
+Beware, just like most people I need to use none-free firmware to drive my hardware, and have upgraded recently my Debian 12 "bookworm" !
