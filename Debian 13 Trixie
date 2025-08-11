@@ -4,22 +4,14 @@
 https://www.debian.org/releases/trixie/release-notes/issues.en.html#ch-information
 https://www.debian.org/releases/trixie/
 
-(Again, jet antoher readme;)
+# Again, jet antoher readme;)
 # https://www.debian.org/releases/trixie/release-notes/upgrading.en.html#start-from-pure-debian
 
-# And now what we were all waitng for, the quick and dirty manual from an AI that is almost as good as DeepSeek in Linux sysadmin jobs, despite being a proprietary competitor:/
-
-
-Absolutely! Here's a **Markdown-style manual** summarizing the upgrade guide you uploaded — tailored for users upgrading from **Debian 12 (Bookworm)** to **Debian 13 (Trixie)**. I’ve kept it structured, easy to follow, and sprinkled in light inline documentation where helpful:
-
+# And now what we were all waitng for, the quick and dirty manual from Copilot that is almost as good as DeepSeek in Linux sysadmin jobs, despite being a proprietary competitor, and at the bottom my history :/
 ---
-
 # 🆙 Upgrading from Debian 12 Bookworm to Debian 13 Trixie
-
 This guide helps you safely upgrade your Debian system using APT and the release notes from the official manual.
-
 ---
-
 ## 🔹 1. Pre-Upgrade Checklist
 
 - **Backup your system**: Use `rsync`, `timeshift`, or your favorite tool.
@@ -33,13 +25,9 @@ This guide helps you safely upgrade your Debian system using APT and the release
   ```bash
   apt-mark showhold
   ```
-
 ---
-
 ## 🔹 2. Adjust APT Configuration
-
 ### For DEB822-style (`/etc/apt/sources.list.d/*.sources`):
-
 ```ini
 Types: deb deb-src
 URIs: http://deb.debian.org/debian
@@ -55,14 +43,10 @@ Suites: trixie-security
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
-
 > 💬 _Inline tip_: For `bookworm-updates`, change suites to `trixie-updates`  
 > 💬 _Docs_: You may also need to adjust `APT::Default-Release` or pinning preferences. See `man apt_preferences`.
-
 ---
-
 ## 🔹 3. Fetch & Apply Updates
-
 After source modifications:
 
 ```bash
@@ -70,13 +54,9 @@ sudo apt update
 sudo apt upgrade
 sudo apt full-upgrade
 ```
-
 You may be prompted to accept repository changes — reply `y` to proceed.
-
 ---
-
 ## 🔹 4. Post-Upgrade Cleanup
-
 - **Remove obsolete packages**:
   ```bash
   sudo apt autoremove
@@ -87,18 +67,77 @@ You may be prompted to accept repository changes — reply `y` to proceed.
   lsb_release -a
   cat /etc/debian_version
   ```
-
 ---
-
 ## 🪛 Notes for Bookworm Users
-
 - `non-free` firmware has been split → ensure `non-free-firmware` is listed in Components.
 - Security suite changed → update to `trixie-security` in all security URIs.
 - Apt modernization:  
   ```bash
   sudo apt modernize-sources
   ```
-
 ---
 
-Let me know if you want a ready-to-paste `.sources` file or help with pinning priority setup!
+Just for da record the AI removed sudo when I asked to summarize my history !:
+# 📦 Initial update and full system upgrade
+sudo apt update && apt-get dist-upgrade
+
+# 📝 Edit legacy and Deb822 sources
+nano /etc/apt/sources.list.d/debian.sources  # using modern format
+nano /etc/apt/sources.list                   # legacy format
+
+# 📖 Review APT docs
+sudo man apt-secure && sudo man sources.list
+
+# ❌ Mistaken command, corrected
+sudo sources.list  # invalid call, not executable
+
+# 🧼 Investigate sources and prepare backup
+ls -alts /etc/apt/sources.list.d/
+sudo mkdir -p /etc/apt/sources.list.d/backup
+sudo cp /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/backup/
+
+# 📦 Second upgrade pass and cleanup
+apt-get dist-upgrade && apt autoremove && apt autoclean
+
+# 🛠️ Tweak debian.sources again
+nano /etc/apt/sources.list.d/debian.sources
+
+# 🧪 Verify package health
+apt-mark showhold && apt-get check
+dpkg --audit && dpkg -C
+
+# 🧹 Cleanup leftover config files
+sudo find /etc -name '*.dpkg-*' -o -name '*.ucf-*' -o -name '*.merge-error'
+shred -fuz /etc/default/grub.ucf-dist
+
+# 📁 Create backup directory and move legacy files
+sudo mkdir -p ~/apt-legacy-backup
+sudo mv /etc/apt/sources.list ~/apt-legacy-backup/
+sudo find /etc/apt/sources.list.d/ -type f -name "*.list" ! -name "debian.sources" -exec mv {} ~/apt-legacy-backup/ \;
+sudo find /etc/apt/sources.list.d/ -type f -name "*.list.save" -exec mv {} ~/apt-legacy-backup/ \;
+
+# 🧾 Inspect contents post-move
+ls -alts /etc/apt/sources.list.d/
+
+# 📚 Upgrade source format tips
+# /etc/apt/sources.list.d/debian.sources (Deb822)
+Types: deb deb-src
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+# Security mirror
+Types: deb deb-src
+URIs: http://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+# 🧹 Final upgrade and cleanup
+sudo apt update && sudo apt upgrade && sudo apt full-upgrade
+sudo apt autoremove
+
+# 🔍 Confirm distro upgrade
+lsb_release -a
+cat /etc/debian_version
