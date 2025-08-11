@@ -1,10 +1,10 @@
-# First as best pratices, just like with namespaces, let's beging with some 
+# First as best pratices, just like with namespaces, let's begin with some 
  Disclaimers !
 
 https://www.debian.org/releases/trixie/release-notes/issues.en.html#ch-information
 https://www.debian.org/releases/trixie/
 
-# Again, jet antoher readme;)
+# Again,)
 # https://www.debian.org/releases/trixie/release-notes/upgrading.en.html#start-from-pure-debian
 
 # And now what we were all waitng for, the quick and dirty manual from Copilot that is almost as good as DeepSeek in Linux sysadmin jobs, despite being a proprietary competitor, and at the bottom my history :/
@@ -76,7 +76,6 @@ You may be prompted to accept repository changes — reply `y` to proceed.
   sudo apt modernize-sources
   ```
 ---
-
 Just for da record the AI removed sudo when I asked to summarize my history !:
 # 📦 Initial update and full system upgrade
 sudo apt update && apt-get dist-upgrade
@@ -87,9 +86,6 @@ nano /etc/apt/sources.list                   # legacy format
 
 # 📖 Review APT docs
 sudo man apt-secure && sudo man sources.list
-
-# ❌ Mistaken command, corrected
-sudo sources.list  # invalid call, not executable
 
 # 🧼 Investigate sources and prepare backup
 ls -alts /etc/apt/sources.list.d/
