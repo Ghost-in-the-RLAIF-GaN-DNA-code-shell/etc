@@ -1,0 +1,171 @@
+# First as best pratices, just like with namespaces, let's begin with some 
+ Disclaimers !
+
+https://www.debian.org/releases/trixie/release-notes/issues.en.html#ch-information
+https://www.debian.org/releases/trixie/
+
+https://www.debian.org/releases/trixie/release-notes/upgrading.en.html#start-from-pure-debian
+
+---
+# Upgrading from Debian 12 Bookworm to Debian 13 Trixie
+Start from pure Debian (comprehensive text‑only version)
+This section distills 4.2 “Start from ‘pure’ Debian” into concrete, copy‑pasteable steps while keeping to Debian’s intent.
+
+4.2.1 Upgrade to Debian 12 (bookworm)
+---
+## 🔹 1. Pre-Upgrade Checklist
+- **Backup your system**: Use `rsync`, `timeshift`, or your favorite tool.
+Following is my history, 
+note I first create the /debian.sources  and then found out it would be better to back up the unwanted files i nthe same folder !
+Doing the inverse would have been that much easier than sudo find /path/.../ -exec mv {} ~/apt-legacy-backup/ \; )
+
+4.2.2 Upgrade to latest point release
+# 📦 Initial update and full system upgrade
+sudo apt update && apt-get dist-upgrade
+ ```
+4.2.3 Debian Backports
+Temporarily disable backports to avoid mixing during the base upgrade:
+
+- **Verify there are no pending holds**:
+  ```bash
+  apt-mark showhold
+  ```
+# If needed: Unhold anything you inadvertently pinned:
+# sudo apt-mark unhold <pkg1> <pkg2> ...
+# 📖 Review APT docs
+sudo man apt-secure 
+
+4.2.5 Remove obsolete packages
+Autoremove unneeded dependencies:
+# 📦 Second upgrade pass and cleanup
+apt-get dist-upgrade && apt autoremove && apt autoclean
+
+4.2.4 Prepare the package database
+Fix partial configurations and broken deps:
+# 🧪 Verify package health
+sudo dpkg --configure -a
+sudo apt -f install
+sudo apt-get check
+sudo dpkg --audit
+
+4.2.6 Remove non‑Debian packages
+Identify third‑party repositories: 
+Comment out or move non‑Debian sources sudo mkdir -p /etc/apt/sources.list.d/backup 
+sudo find /etc/apt/sources.list.d/ -maxdepth 1 -type f \
+  ! -name 'debian.sources' -exec mv -v {} /etc/apt/sources.list.d/backup/ \;
+Optional: list packages not from Debian (manual review):
+# Show installed packages with non-Debian origins
+
+4.2.7 Clean up leftover configuration files
+Sweep dpkg/ucf merge debris and editor backups:
+
+# 🧹 Cleanup leftover config files
+sudo find /etc -name '*.dpkg-*' -o -name '*.ucf-*' -o -name '*.merge-error'
+
+# 🧼 Investigate sources and prepare backup
+ls -alts /etc/apt/sources.list.d/
+sudo mkdir -p /etc/apt/sources.list.d/backup
+sudo cp /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/backup/
+#Here^^ mv would have been better ...
+# 📁 Create backup directory and move legacy files
+sudo mkdir -p ~/apt-legacy-backup
+sudo mv /etc/apt/sources.list ~/apt-legacy-backup/
+sudo find /etc/apt/sources.list.d/ -type f -name "*.list" ! -name "debian.sources" -exec mv {} ~/apt-legacy-backup/ \;
+sudo find /etc/apt/sources.list.d/ -type f -name "*.list.save" -exec mv {} ~/apt-legacy-backup/ \;
+
+# 🧾 Inspect contents post-move
+ls -alts /etc/apt/sources.list.d/
+
+# 📝 Edit legacy and Deb822 sources
+nano /etc/apt/sources.list.d/debian.sources  # using modern format
+---
+4.2.8 The non‑free and non‑free‑firmware components
+Decide your policy:
+If you need proprietary firmware or non‑free packages, keep “non-free” and “non-free-firmware”.
+If you don’t, remove them to avoid unintended pulls.
+
+Deb822 example (keep enabled only if needed):
+## 🔹 2. Adjust APT Configuration
+### For DEB822-style (`/etc/apt/sources.list.d/*.sources`):
+```ini
+Types: deb deb-src
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+```ini
+Types: deb deb-src
+URIs: http://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+> 💬 _Inline tip_: For `bookworm-updates`, change suites to `trixie-updates`  
+> 💬 _Docs_: You may also need to adjust `APT::Default-Release` or pinning preferences. See `man apt_preferences`.
+---
+4.2.9 The proposed‑updates section
+...
+4.2.10 Unofficial sources
+Disable all third‑party repos (browser vendors, Docker, nodesource, VS Code, PPA clones, etc.) Move their files to a backup dir and re‑add them only after the upgrade, checking compatibility with trixie.
+...
+4.2.11 Disabling APT pinning
+...
+4.2.12 Check package status
+Final health checks before switching suites:
+# 🛠️ Tweak debian.sources again
+nano /etc/apt/sources.list.d/debian.sources
+
+4.4.3. Make sure you have sufficient space for the upgrade
+Ensuring sufficient free space
+Debian upgrades can require additional space in /, /var (APT cache), and often /boot for new kernels. .
+Measure usage:
+df -h /
+df -h /var
+df -h /boot
+...
+...
+...
+## 🔹 3. Fetch & Apply Updates
+After source modifications:
+4.4.5. Minimal system upgrade
+apt upgrade --without-new-pkgs
+
+4.4.6. Upgrading the system
+```
+sudo apt update
+sudo apt upgrade
+sudo apt full-upgrade
+```
+4.5. Possible issues during upgrade !
+...
+4.5.1. Full-upgrade fails with “Could not perform immediate configuration”
+...
+4.5.3. Conflicts or Pre-Depends loops
+...
+4.5.4. File conflicts
+...
+4.6.1. Installing a kernel metapackage
+...
+4.6.2. 64-bit little-endian PowerPC (ppc64el) page size
+...
+4.7. Cleanup after the upgrade
+---
+## 🔹 4. Post-Upgrade Cleanup
+...
+- **Remove obsolete packages**:
+  ```
+  sudo apt autoremove
+  ```
+...
+
+4.?.?. 
+- **Reboot** and verify version:
+  ```bash
+  lsb_release -a
+  cat /etc/debian_version
+  ```
+---
+eof
+---
