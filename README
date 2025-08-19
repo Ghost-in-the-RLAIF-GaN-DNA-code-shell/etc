@@ -1,7 +1,7 @@
 Dear folks,
 I just planned to drop here my /etc/ configs, and should have done so,( but since https://www.debian.org/releases/trixie/ came out, I want to follow up with that ya all k*now ;)
-Sooo , here we go through a short journey of upgrading to Debian 13 (Trixie), from an up to date Bookworm ! , with an foolish amateur audit later this month ... , 
-because it is probably going to mess up ya checksum database e.g. AIDE !
+Sooo , here we go through a short journey of upgrading to Debian 13 (Trixie), from an up to date Bookworm ! , with an amateur audit starting now , because the upgrade is going to mess up your checksum database e.g. AIDE !
+Already I want to hint at the fact that for some if /etc/pam.d/login is edited to invoke /security/access.conf some unexpected string is found behind the exception for local line !
 
 Beware, just like most people I need to use none-free firmware to drive my hardware, and have upgraded recently my Debian 12 "bookworm". Noteworthy ! 
 For the very same reasons, like most people, I have done wrong what I felt like hours of reading: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1102160 , 
